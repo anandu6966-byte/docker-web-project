@@ -2,17 +2,22 @@ pipeline {
     agent any
 
     stages {
+        stage('Clone Code') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t docker-web-app .'
+                sh 'docker build -t docker-web-app .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                bat '''
-                docker rm -f webapp
+                sh '''
+                docker rm -f webapp || true
                 docker run -d -p 9090:80 --name webapp docker-web-app
                 '''
             }
